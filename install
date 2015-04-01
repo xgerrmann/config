@@ -52,7 +52,7 @@ elif [ "$(readlink "$HOME/.config/config_dir")" != "$config_dir_prefix$config_di
 fi
 
 # Install configuration files.
-for file in bash_profile bashrc gitconfig profile screenrc vimrc zshrc vim zprofile Xresources tmux.conf
+for file in bash_profile bashrc gitconfig profile screenrc vimrc zshrc vim zprofile Xresources zshrc.local
 do
 	install_file "$file" ".$file"
 done
