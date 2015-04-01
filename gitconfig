@@ -31,3 +31,6 @@
 
 [include]
 	path = ~/.gitconfig.local
+[user]
+	email = hansg91@gmail.com
+	name = Hans Gaiser
