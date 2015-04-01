@@ -1,0 +1,2 @@
+alias ros='source ~/.rossetup'
+alias ubuntu='ssh -Y hgaiser@MacBook-Ubuntu'
