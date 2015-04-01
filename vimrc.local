@@ -1,7 +1,16 @@
 Bundle 'scrooloose/nerdcommenter'
+Bundle 'jistr/vim-nerdtree-tabs'
+Bundle 'vim-scripts/taglist.vim'
 
 if has("mouse_sgr")
     set ttymouse=sgr
 else
     set ttymouse=xterm2
 end
+
+let Tlist_Use_Right_Window=1
+let tlist_cpp_settings = 'c++;c:class;f:function'
+
+set backspace=indent,eol,start
+
+nmap <Leader>l :TlistToggle<Cr>
