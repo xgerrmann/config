@@ -1,9 +1,10 @@
 export PATH=/usr/local/bin:$PATH
 export LC_ALL=en_US.UTF-8
-export HOMEBREW_GITHUB_API_TOKEN=9562e833a9392c478c5b4a9cf7535b651a77d5e2
 
 fpath=(/usr/local/share/zsh-completions $fpath)
 compinit
 
 bindkey "^[[A" history-search-backward
 bindkey "^[[B" history-search-forward
+
+eval `/usr/libexec/path_helper -s`

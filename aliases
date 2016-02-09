@@ -4,9 +4,9 @@ else
 	alias ls='ls --color=auto'
 fi
 
-alias lla='ls -alF --group-directories-first'
-alias ll='ls -lF --group-directories-first'
-alias la='ls -A'
+alias lla='ls -alFh --group-directories-first'
+alias ll='ls -lFh --group-directories-first'
+alias la='ls -Ah'
 alias l='ls -CF'
 
 alias clip='xclip -i -selection clipboard'
