@@ -68,7 +68,6 @@ Bundle 'lukerandall/haskellmode-vim'
 Bundle 'eagletmt/neco-ghc'
 Bundle 'ShowMarks'
 
-Bundle 'ShowMarks'
 let g:showmarks_enable=0
 let g:haddock_browser='xdg-open'
 let g:necoghc_enable_detailed_browse=1
