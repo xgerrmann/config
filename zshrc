@@ -3,15 +3,8 @@ source "$HOME/.config/config_dir/shellrc"
 try_source /usr/share/doc/pkgfile/command-not-found.zsh
 try_source /etc/zsh_command_not_found
 
-GIT_PS1_SHOWUPSTREAM=(${(s/ /)GIT_PS1_SHOWUPSTREAM})
-
-# Dirty/untracked/staged is already shown by the code below.
-GIT_PS1_SHOWDIRTYSTATE=
-GIT_PS1_SHOWUNTRACKEDFILES=
-
 zstyle ':completion:*' auto-description '<%d>'
 zstyle ':completion:*' completer _complete _ignored
-zstyle ':completion:*' expand prefix suffix
 zstyle ':completion:*' file-sort name
 zstyle ':completion:*' format '[%d]'
 zstyle ':completion:*' group-name ''
@@ -83,39 +76,6 @@ function chpwd {
 	echo "Files: $count, hidden: $hidden"
 }
 
-function git_path {
-	test_command dname || return 1
-	setopt localoptions
-	setopt re_match_pcre
-	local p="$1"
-	local result=""
-	local pathspec=""
-	until [ "$p" = '.' -o "$p" = '/' ]; do
-		local name="${p##*/}"
-		local info=""
-		if [ -e ${~p}/.git ]; then
-			info="$(cd -q ${~p} && __git_ps1 "(%s)")"
-			info="${info/ u/}"
-		fi
-		info="$info$(
-			cd -q ${~p} &>/dev/null || exit 1
-			st=$(git status --porcelain . "$pathspec" 2>/dev/null)
-			[[ "$st" =~ '(?:^|\n).\w' ]] &&  echo -n '*';
-			[[ "$st" =~ '(?:^|\n)\w'  ]] &&  echo -n '+';
-			[[ "$st" =~ '(?:^|\n)\?'  ]] &&  echo -n '%%';
-		)"
-		if [ -n "$result" ]; then
-			result=$(printf "$2/%s" "$name" "$info" "$result")
-		else
-			result=$(printf "$2" "$name" "$info")
-		fi
-		pathspec=":(exclude)$name"
-		p="$(dname "$p")"
-	done
-	[ "$p" = '/' ] && result=$(printf "$2/%s" '' '' "$result")
-	echo -n "$result"
-}
-
 print_status="0"
 
 function preexec {
@@ -129,6 +89,7 @@ function precmd {
 }
 
 function prompt {
+	echo -n "%{$bold_color$fg[black]%}${(l:$NESTEDSHELLS::$$:)}%{$reset_color%}"
 	if [ $UID -eq 0 ]; then
 		echo -n "%{$fg[red]%}%n"
 	elif [ "$TTY_USER" != "$USER" ]; then
@@ -141,7 +102,7 @@ function prompt {
 	fi
 	echo -n "@${HOST##${TTY_USER-$USER}-}"
 	echo -n "%{$reset_color%}:"
-	git_path "$(print -P '%~')" "%%{$fg[blue]%%}%s%%{$fg[yellow]%%}%s%%{$fg[magenta]%%}"
+	git_prompt_path
 	echo -n "%{$reset_color%}"
 	echo -n '%(1j.[%j].)'
 	if [ $UID -eq 0 ]; then

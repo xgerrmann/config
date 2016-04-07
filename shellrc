@@ -10,7 +10,6 @@ function test_command {
 	command -v "$1" > /dev/null
 }
 
-try_source "$config_dir/git-prompt.sh"
 try_source "$config_dir/aliases"
 
 # Set a color in the terminal palette.
@@ -47,6 +46,9 @@ set_color 22 003300 # dark green
 set_color 52 330000 # dark green
 set_color 53 330033 # dark magenta
 
+# Disable ctrl-q and ctrl-s.
+stty start undef stop undef
+
 # Set up dircolors.
 if test_command dircolors; then
     test -r "$config_dir/dircolors" && eval "$(dircolors -b "$config_dir/dircolors")" || eval "$(dircolors -b)"
@@ -69,38 +71,25 @@ function mkd {
 	fi
 }
 
-# Get the directory name of a path.
-# Behaves exactly like dirname with no options.
-function dname {
-	# Empty input means current directory.
-	local p=${1:-.}
-	# Strip trailing slash.
-	p="${p%/}"
-	# Remove last component.
-	dir="${p%/*}"
-
-	# If nothing is left, it's the root directory.
-	if [ -z "$dir" ]; then
-		echo '/'
-	# If nothing changed there was no slash, so the CWD is the directory.
-	elif [ "$dir" = "$p" ]; then
-		echo '.'
-	# Otherwise $dir holds the directory name.
-	else
-		echo "$dir"
-	fi
-}
-
 export TTY="$(tty)"
-export TTY_HOST="$(who -m | awk '$NF ~ /\(.*\)/ { if ("/dev/" $2 == ENVIRON["TTY"]) { sub(/^\(/, "", $5); sub(/\)$/, "", $5); print $5; exit 0; } }')"
+export TTY_HOST="$(who -m | awk '$NF ~ /\(.*\)/ { if ("/dev/" $2 == ENVIRON["TTY"]) { sub(/^\(/, "", $NF); sub(/\)$/, "", $NF); print $NF; exit 0; } }')"
 export TTY_USER="$(ls -l "$TTY" | awk '{ print $3; exit 0; }')"
 
 
-# Set up git PS1 configuration.
-GIT_PS1_SHOWDIRTYSTATE=1
+if [ "$SHELLTTY" != "$TTY" ]; then
+	export SHELLTTY="$TTY"
+	export NESTEDSHELLS=0
+elif [ "$SHELLPID" != "$$" ]; then
+	export NESTEDSHELLS=$(($NESTEDSHELLS + 1))
+fi
+export SHELLPID=$$
+
+# Set up git prompt configuration.
 GIT_PS1_SHOWSTASHSTATE=1
-GIT_PS1_SHOWUNTRACKEDFILES=1
-GIT_PS1_SHOWUPSTREAM="auto verbose"
+GIT_PS1_SHOWUPSTREAM=(auto verbose)
+
+source "$config_dir/git-prompt.sh"
+source "$HOME/.config/config_dir/git-prompt-path.sh"
 
 export EDITOR=vim
 export PAGER=less

@@ -2,6 +2,8 @@ Bundle 'scrooloose/nerdcommenter'
 Bundle 'jistr/vim-nerdtree-tabs'
 Bundle 'vim-scripts/taglist.vim'
 
+nmap <Leader>n :NERDTreeTabsToggle<Cr>
+
 if has("mouse_sgr")
     set ttymouse=sgr
 else
