@@ -4,3 +4,7 @@ You should put your personal git configuration (like your name and email)
 in ~/.gitconfig.local.
 
 Don't forget to run ./install again when you update.
+
+If VIM complains about weird characters, add the following to your .vimrc
+set encoding=utf-8  " The encoding displayed.
+set fileencoding=utf-8  " The encoding written to file.
